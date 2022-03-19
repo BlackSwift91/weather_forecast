@@ -4,7 +4,6 @@ interface IDirectGeocoding {
 }
 
 interface IReverseGeocoding {
-  city: string;
   lat: number;
   lon: number;
   limit: number;
@@ -31,4 +30,16 @@ export const reverseGeocoding = async (data: IReverseGeocoding) => {
 export const oneCallApi = async (data: IOneCallApi) => {
   // eslint-disable-next-line prettier/prettier
   return await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${data.lat}&lon=${data.lon}&exclude=${data.exclude.join(',')}&appid=${API_KEY}`).then(res => res.json());
+};
+
+export const weatherFetch = async (latitude: number, longitude: number, exclude: string[], limit: number) => {
+  return Promise.all([
+    oneCallApi({ lat: latitude, lon: longitude, exclude: exclude }),
+    reverseGeocoding({ lat: latitude, lon: longitude, limit: limit }),
+  ]).then(values => {
+    return {
+      weather: values[0],
+      location: values[1][0],
+    };
+  });
 };

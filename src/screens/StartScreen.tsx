@@ -1,7 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, StatusBar, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+
+import { useSelector } from 'react-redux';
 
 export const StartScreen = () => {
+  const userLocation = useSelector((state) => state);
+
+  console.log(userLocation);
   return (
     <SafeAreaView>
       <ScrollView contentInsetAdjustmentBehavior="automatic">

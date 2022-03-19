@@ -1,0 +1,8 @@
+export const SET_WEATHER = 'SET_WEATHER';
+export const SET_REVERSE_LOCATION = 'SET_REVERSE_LOCATION';
+export const SET_LOCATION_NAME = 'SET_LOCATION_NAME';
+export const ADD_PLACE = 'ADD_PLACE';
+export const UPDATE_PLACE = 'UPDATE_PLACE';
+
+export const SET_LOCATION = 'SET_USER_LOCATION';
+

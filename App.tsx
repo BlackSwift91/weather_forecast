@@ -8,21 +8,23 @@
  * @format
  */
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { StyleSheet, useColorScheme, LogBox } from 'react-native';
+import React from 'react';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { useColorScheme, LogBox } from 'react-native';
+import { AppNavigation } from './src/navigation/AppNavigation';
+
+import 'react-native-gesture-handler';
+
+// import appConfig from '../app.json';
 
 LogBox.ignoreLogs([
   "[react-native-gesture-handler] Seems like you\'re using an old API with gesture components, check out new Gestures system!",
 ]);
 
+import { store } from './src/store/';
+import { Provider } from 'react-redux';
+
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-
-import { getLocation } from './src/gpsSettings';
-
-import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
-
-import { Navigator } from './src/navigation/navigation';
-import 'react-native-gesture-handler';
 
 const navTheme = {
   ...DefaultTheme,
@@ -33,43 +35,17 @@ const navTheme = {
 };
 
 const App = () => {
-  const [gpsSettings, setGpsSettings] = useState({
-    forceLocation: true,
-    highAccuracy: true,
-    locationDialog: true,
-    significantChanges: true,
-    useLocationManager: false,
-  });
-  const [location, setLocation] = useState(null);
-
-
-  const gpsCurrentPosMode = {
-    accuracy: {
-      android: 'high',
-      ios: 'best',
-    },
-    enableHighAccuracy: true,
-    timeout: 15000,
-    maximumAge: 10000,
-    distanceFilter: 0,
-    forceRequestLocation: true,
-    forceLocationManager: false,
-    showLocationDialog: true,
-  };
-
-  console.log(gpsCurrentPosMode);
-
   const isDarkMode = useColorScheme() === 'dark';
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-
-
   return (
-    <NavigationContainer theme={navTheme}>
-      <Navigator />
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer theme={navTheme}>
+        <AppNavigation />
+      </NavigationContainer>
+    </Provider>
   );
 };
 
