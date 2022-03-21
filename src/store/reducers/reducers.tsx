@@ -1,9 +1,9 @@
 import Geolocation from 'react-native-geolocation-service';
 
-import { SET_LOCATION, SET_WEATHER, SET_LOCATION_NAME, UPDATE_PLACE, ADD_PLACE } from '../types';
+import { SET_LOCATION, UPDATE_PLACE, ADD_PLACE } from '../types';
 import { LocationActions, WeatherActions } from '../actions/actions';
 
-import { IWeatherState } from '../../interface';
+import { IWeatherState } from '../../interfaces';
 
 const userLocationState: Geolocation.GeoPosition = {
   coords: {
@@ -21,10 +21,10 @@ const userLocationState: Geolocation.GeoPosition = {
 };
 
 export const userLocationReducer = (state = userLocationState, action: LocationActions) => {
-  console.log(action.type);
+  // console.log(action.type);
   switch (action.type) {
     case SET_LOCATION:
-      console.log('LR', action.payload);
+      // console.log('LR', action.payload);
       return {
         coords: {
           latitude: action.payload.coords.latitude,
@@ -46,32 +46,58 @@ export const userLocationReducer = (state = userLocationState, action: LocationA
 };
 
 const weatherState: IWeatherState = {
-  locationWeather: [],
+  locationWeather: [
+    {
+      weather: {
+        lat: 0,
+        lon: 0,
+        timezone: '',
+        timezone_offset: 0,
+        current: undefined,
+        minutely: undefined,
+        hourly: undefined,
+        daily: undefined,
+        alerts: [],
+      },
+      location: {
+        name: '',
+        local_names: {},
+        lat: 0,
+        lon: 0,
+        country: '',
+        state: '',
+      },
+      id: 0,
+      isActiveScreen: true,
+    },
+  ],
+  lastUpdate: null,
 };
 
 export const weatherReducer = (state = weatherState, action: WeatherActions) => {
-  console.log(action.type);
+  // console.log(action.type);
   switch (action.type) {
     case ADD_PLACE:
-      console.log('AP', action.payload);
+      // console.log('AP', action.payload);
       return {
         ...state, //spreading the original state
-        locationWeather: [action.payload, ...state.locationWeather],
+        locationWeather: [...state.locationWeather, action.payload],
       };
+    case UPDATE_PLACE:
+      console.log('UP', action.payload);
+      const newArray = [...state.locationWeather]; //making a new array
+      newArray[action.payload.id].location = action.payload.place.location;
+      newArray[action.payload.id].weather = action.payload.place.weather;
+      console.log('TIME', action.payload.place.weather.current?.dt);
+
+      return {
+        ...state, //spreading the original state
+        locationWeather: [...newArray],
+        lastUpdate: action.payload.place.weather.current?.dt,
+      };
+
     default:
       state;
   }
   return state;
 };
-
-// weather: {
-  //   lat: action.payload.weather.lat,
-  //   lon: action.payload.weather.lon,
-  //   timezone: action.payload.weather.timezone,
-  //   timezone_offset: action.payload.weather.timezone_offset,
-  //   current: action.payload.weather.current,
-  //   minutely: action.payload.weather.minutely,
-  //   hourly: action.payload.weather.hourly,
-  //   daily: action.payload.weather.daily,
-  //   alerts: action.payload.weather.alerts,
-  // },

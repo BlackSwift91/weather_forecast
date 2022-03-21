@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 export const StartScreen = () => {
   const userLocation = useSelector((state) => state);
 
-  console.log(userLocation);
+  console.log('START SCREEN', userLocation);
   return (
     <SafeAreaView>
       <ScrollView contentInsetAdjustmentBehavior="automatic">

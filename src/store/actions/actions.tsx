@@ -1,6 +1,6 @@
 import Geolocation from 'react-native-geolocation-service';
 
-import { ILocation, IOneAPIResponse, ILocationWeather } from '../../interface';
+import { ILocation, IOneAPIResponse, ILWReducer, ILocationWeather } from '../../interfaces';
 
 export type LocationActions = {
   type: 'SET_USER_LOCATION';
@@ -42,15 +42,10 @@ export function setUserLocation(position: Geolocation.GeoPosition): LocationActi
 
 export type WeatherActions =
   | {
-      type: 'SET_WEATHER';
+      type: 'UPDATE_PLACE';
       payload: {
-        weather: IOneAPIResponse;
-      };
-    }
-  | {
-      type: 'SET_LOCATION';
-      payload: {
-        location: ILocation;
+        place: { weather: IOneAPIResponse; location: ILocation };
+        id: number;
       };
     }
   | {
@@ -59,35 +54,28 @@ export type WeatherActions =
         weather: IOneAPIResponse;
         location: ILocation;
       };
-    }
-  | {
-      type: 'UPDATE_PLACE';
-      payload: {
-        place: { weather: IOneAPIResponse; location: ILocation };
-        index: number;
-      };
     };
 
-export function setWeather(weather: IOneAPIResponse): WeatherActions {
-  return {
-    type: 'SET_WEATHER',
-    payload: {
-      weather: {
-        lat: weather.lat,
-        lon: weather.lon,
-        timezone: weather.timezone,
-        timezone_offset: weather.timezone_offset,
-        current: weather.current,
-        minutely: weather.minutely,
-        hourly: weather.hourly,
-        daily: weather.daily,
-        alerts: weather.alerts,
-      },
-    },
-  };
-}
+// export function setWeather(weather: IOneAPIResponse): WeatherActions {
+//   return {
+//     type: 'SET_WEATHER',
+//     payload: {
+//       weather: {
+//         lat: weather.lat,
+//         lon: weather.lon,
+//         timezone: weather.timezone,
+//         timezone_offset: weather.timezone_offset,
+//         current: weather.current,
+//         minutely: weather.minutely,
+//         hourly: weather.hourly,
+//         daily: weather.daily,
+//         alerts: weather.alerts,
+//       },
+//     },
+//   };
+// }
 
-export function addLocation(place: ILocationWeather): WeatherActions {
+export function addLocation(place: ILWReducer): WeatherActions {
   return {
     type: 'ADD_PLACE',
     payload: {
@@ -114,7 +102,7 @@ export function addLocation(place: ILocationWeather): WeatherActions {
   };
 }
 
-export function updateLocation(location: ILocationWeather, index: number): WeatherActions {
+export function updateLocation(location: ILocationWeather, id: number): WeatherActions {
   return {
     type: 'UPDATE_PLACE',
     payload: {
@@ -139,23 +127,7 @@ export function updateLocation(location: ILocationWeather, index: number): Weath
           state: location.location?.state,
         },
       },
-      index: index,
+      id: id,
     },
   };
 }
-
-// export function setLocation(location: ILocation): WeatherActions {
-//   return {
-//     type: 'SET_LOCATION_NAME',
-//     payload: {
-//       location: {
-//         name: location.name,
-//         local_names: { ...location.local_names },
-//         lat: location.lat,
-//         lon: location.lon,
-//         country: location.country,
-//         state: location?.state,
-//       },
-//     },
-//   };
-// }
