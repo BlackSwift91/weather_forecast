@@ -24,6 +24,8 @@ LogBox.ignoreLogs([
 import { store } from './src/store/';
 import { Provider } from 'react-redux';
 
+import { locationsInit, settingsInit } from './src/store/actions/actions';
+
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const navTheme = {
@@ -39,6 +41,8 @@ const App = () => {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+  store.dispatch(settingsInit);
+  // store.dispatch(locationsInit);
 
   return (
     <Provider store={store}>

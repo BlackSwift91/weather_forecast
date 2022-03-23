@@ -168,10 +168,10 @@ export interface IOneAPIResponse {
 export interface ILocationWeather {
   location: ILocation;
   weather: IOneAPIResponse;
+  id: number;
 }
 
 export interface ILWReducer extends ILocationWeather {
-  id: number;
   isActiveScreen?: boolean;
 }
 
@@ -183,4 +183,18 @@ export interface ILWFetch {
 export interface IWeatherState {
   locationWeather: ILWReducer[];
   lastUpdate: number | null;
+}
+
+export interface ISettings {
+  settings: {
+    updateGeoLocation: boolean;
+    updateTime: number;
+    language: string;
+    temperatureUnits: string;
+    windSpeedUnits: string;
+  };
+}
+
+export interface IAppReducer {
+  isASDataLoaded: boolean;
 }

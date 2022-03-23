@@ -4,5 +4,13 @@ export const SET_LOCATION_NAME = 'SET_LOCATION_NAME';
 export const ADD_PLACE = 'ADD_PLACE';
 export const UPDATE_PLACE = 'UPDATE_PLACE';
 
-export const SET_LOCATION = 'SET_USER_LOCATION';
+export const SET_LANGUAGE = 'SET_LANGUAGE';
 
+
+
+
+
+export const INITIAL_DATA_LOAD = 'INITIAL_DATA_LOAD';
+export const LOAD_INITIAL_SETTINGS = 'LOAD_INITIAL_SETTINGS';
+
+export const SET_LOCATION = 'SET_USER_LOCATION';

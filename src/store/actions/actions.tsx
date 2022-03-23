@@ -1,6 +1,8 @@
 import Geolocation from 'react-native-geolocation-service';
 
-import { ILocation, IOneAPIResponse, ILWReducer, ILocationWeather } from '../../interfaces';
+import { ILocation, IOneAPIResponse, ILWReducer, ILocationWeather, ISettings } from '../../interfaces';
+
+import { getData } from '../../AsyncStorage';
 
 export type LocationActions = {
   type: 'SET_USER_LOCATION';
@@ -42,10 +44,15 @@ export function setUserLocation(position: Geolocation.GeoPosition): LocationActi
 
 export type WeatherActions =
   | {
+      type: 'INITIAL_DATA_LOAD';
+      payload: {
+        data: ILWReducer[];
+      };
+    }
+  | {
       type: 'UPDATE_PLACE';
       payload: {
-        place: { weather: IOneAPIResponse; location: ILocation };
-        id: number;
+        place: { weather: IOneAPIResponse; location: ILocation; id: number };
       };
     }
   | {
@@ -56,24 +63,11 @@ export type WeatherActions =
       };
     };
 
-// export function setWeather(weather: IOneAPIResponse): WeatherActions {
-//   return {
-//     type: 'SET_WEATHER',
-//     payload: {
-//       weather: {
-//         lat: weather.lat,
-//         lon: weather.lon,
-//         timezone: weather.timezone,
-//         timezone_offset: weather.timezone_offset,
-//         current: weather.current,
-//         minutely: weather.minutely,
-//         hourly: weather.hourly,
-//         daily: weather.daily,
-//         alerts: weather.alerts,
-//       },
-//     },
-//   };
-// }
+export async function locationsInit(dispatch) {
+  const fetchResult = await getData('first');
+  // console.log("FR", fetchResult);
+  dispatch({ type: 'INITIAL_DATA_LOAD', payload: fetchResult });
+}
 
 export function addLocation(place: ILWReducer): WeatherActions {
   return {
@@ -126,8 +120,44 @@ export function updateLocation(location: ILocationWeather, id: number): WeatherA
           country: location.location.country,
           state: location.location?.state,
         },
+        id: id,
       },
-      id: id,
+    },
+  };
+}
+
+export type SettingActions =
+  | {
+      type: 'LOAD_INITIAL_SETTINGS';
+      payload: {
+        isAsyncDataLoaded: boolean;
+        isAsyncSettingsLoaded: boolean;
+        settings: {
+          updateGeoLocation: boolean;
+          updateTime: number;
+          language: string;
+          temperatureUnits: string;
+          windSpeedUnits: string;
+        };
+      };
+    }
+  | {
+      type: 'SET_LANGUAGE';
+      payload: {
+        language: string;
+      };
+    };
+
+export async function settingsInit(dispatch) {
+  const fetchResult: ISettings = await getData('settings');
+  dispatch({ type: 'LOAD_INITIAL_SETTINGS', payload: fetchResult });
+}
+
+export function setLanguage(language: string): SettingActions {
+  return {
+    type: 'SET_LANGUAGE',
+    payload: {
+      language,
     },
   };
 }

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, RefreshControl, StatusBar } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import moment from 'moment';
 
 import { weatherFetch } from '../API';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,39 +11,15 @@ import { IRootState } from '../store/index';
 
 export const CityScreen = () => {
   const [refreshing, setRefreshing] = React.useState(false);
-  const [isLoaded, setIsLoaded] = React.useState(false);
+  const [isLoaded, setIsLoaded] = React.useState(true);
 
   const dispatch = useDispatch();
 
   const userLocation = useSelector((state: IRootState) => state.userLocationReducer.coords);
+  const time = useSelector((state: IRootState) => state.weatherReducer);
   const test = useSelector((state: IRootState) => state.weatherReducer.locationWeather);
+
   // const user = useSelector((state: IRootState) => state);
-
-  //  console.log('222222222', test[0]);
-  // console.log('333333333', userLocation);
-  // console.log('3333333', cityName);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     if (userLocation.coords.latitude) {
-  //       // reverseGeocoding({ lat: userLocation.coords.latitude, lon: userLocation.coords.longitude, limit: 2 }).then((res) => setWeatherUser(res));
-  //     }
-  //   })();
-  // }, [userLocation, cityName]);
-
-  useEffect(() => {
-    (async () => {
-      if (userLocation.latitude) {
-        console.log('WEATHER FETCH');
-        weatherFetch(userLocation.latitude, userLocation.longitude, ['hourly', 'minutely'], 1).then(res => {
-          if (res.status && res.payload) {
-            dispatch(updateLocation(res.payload, 0));
-            setIsLoaded(true);
-          }
-        });
-      }
-    })();
-  }, [dispatch, userLocation]);
 
   // useEffect(() => {
   //   (async () => {

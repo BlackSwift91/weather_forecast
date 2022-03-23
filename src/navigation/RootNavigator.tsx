@@ -1,46 +1,61 @@
 import React, { useEffect } from 'react';
 
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
-
-import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-
-import { Text, StyleSheet, StatusBar } from 'react-native';
-
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { StartScreen } from '../screens/StartScreen';
-import { CityScreen } from '../screens/CityScreen';
+import { useSelector } from 'react-redux';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import { createStackNavigator } from '@react-navigation/stack';
+import { Text, StyleSheet, StatusBar } from 'react-native';
 
-import { CityNavigator } from './CityNavigator';
-// import { SettingsNavigator } from './SettingsNavigator';
-
-import { CustomHeaderButton } from '../components/HeaderButton';
+import { useDispatch } from 'react-redux';
 
 import { IRootState } from '../store/index';
+import { CityScreen } from '../screens/CityScreen';
+import { CityNavigator } from './CityNavigator';
+import { SettingsNavigator } from './SettingsNavigator';
+import { LoadingScreen } from '../screens/LoadingScreen';
+import { CustomHeaderButton } from '../components/HeaderButton';
 
-import { useSelector } from 'react-redux';
-
-const Tab = createMaterialTopTabNavigator();
 const Stack = createStackNavigator();
 
+import { storeData, getData } from '../AsyncStorage';
+
 export const RootNavigator = () => {
-  console.log('ROOTNAVIGATION RENDER');
+  console.log('ROOT NAVIGATION RENDER');
   const [activeCity, setActiveCity] = React.useState('');
+  const [isLoaded, setIsLoaded] = React.useState(true);
 
-  const data = useSelector((state: IRootState) => state.weatherReducer.locationWeather);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    (async () => {
-      if (data[0].location.name) {
-        setActiveCity(data.filter(item => item.isActiveScreen === true)[0].location.local_names.ru);
-      }
-    })();
-  }, [data]);
 
-  console.log('ACTIVE CITY', activeCity);
+
+  // useEffect(() => {
+  //   (async () => {
+  //     storeData('settings', da);
+  //   })();
+  // }, [da]);
+
+  // console.log("SETTINGS RED", settings);
+
+  if (!isLoaded) {
+    return (
+      <Stack.Navigator
+        screenOptions={{
+          headerMode: 'screen',
+          headerTransparent: true,
+          headerTitleAlign: 'center',
+        }}>
+        <Stack.Screen
+          options={{
+            title: '',
+          }}
+          name="CityList"
+          component={LoadingScreen}
+        />
+      </Stack.Navigator>
+    );
+  }
 
   return (
     <Stack.Navigator
@@ -84,16 +99,8 @@ export const RootNavigator = () => {
         name="CityList"
         component={CityNavigator}
       />
-      {/* <Stack.Screen name="Settings" component={SettingsNavigator} /> */}
+      <Stack.Screen name="Settings" component={SettingsNavigator} />
     </Stack.Navigator>
-  );
-};
-
-export const WeatherNavigator = () => {
-  return (
-    <Tab.Navigator tabBar={() => null}>
-      <Tab.Screen name="Weather" component={CityScreen} />
-    </Tab.Navigator>
   );
 };
 
@@ -101,7 +108,6 @@ const styles = StyleSheet.create({
   center: {
     flex: 1,
   },
-
   version: {
     fontFamily: 'open-bold',
   },

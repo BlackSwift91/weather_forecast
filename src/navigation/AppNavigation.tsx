@@ -1,26 +1,54 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Geolocation from 'react-native-geolocation-service';
 import { Alert, Platform } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { IRootState } from '../store/index';
 
 import { RootNavigator } from './RootNavigator';
-
-import { gpsCurrentPosMode, gpsWatchPosMode } from '../gpsSettings';
-import { hasLocationPermission } from '../permissions';
+import { LoadingNavigator } from './LoadingNavigator';
 import { setUserLocation } from '../store/actions/actions';
+import { hasLocationPermission } from '../permissions';
+import { gpsCurrentPosMode, gpsWatchPosMode } from '../gpsSettings';
+
+import { storeData, getData } from '../AsyncStorage';
 
 export const AppNavigation = () => {
-  const [observing, setObserving] = useState(false);
-  const [foregroundService, setForegroundService] = useState(false);
+  console.log('APP NAVIGATION RENDER');
+  const [isAsyncDataLoaded, setIsAsyncDataLoaded] = React.useState(false);
+  const [isAsyncSettingsLoaded, setIsAsyncSettingsLoaded] = React.useState(false);
 
-  const dispatch = useDispatch();
-  console.log('APPNAVIGATION RENDER');
+  const weather = useSelector((state: IRootState) => state.weatherReducer);
+  const settings = useSelector((state: IRootState) => state.appReducer);
+
+  console.log('CONSOLELOG', settings);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      getLocation();
+    }, 1200000);
+    return () => clearInterval(intervalId);
+  }, []);
+
   useEffect(() => {
     (async () => {
-      console.log('GET LOCATION');
-      getLocation();
+      if (!isAsyncSettingsLoaded && settings.settings) {
+        storeData('settings', settings);
+        setIsAsyncSettingsLoaded(true);
+        setIsAsyncDataLoaded(true);
+      }
     })();
-  }, []);
+  }, [isAsyncSettingsLoaded, settings]);
+
+  // const [observing, setObserving] = useState(false);
+  // const [foregroundService, setForegroundService] = useState(false);
+
+  // useEffect(() => {
+  //   (async () => {
+  //     console.log('GET LOCATION');
+  //     getLocation();
+  //   })();
+  // }, []);
 
   // useEffect(() => {
   //   (async () => {
@@ -31,14 +59,6 @@ export const AppNavigation = () => {
   //     }
   //   })();
   // }, []);
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {  //assign interval to a variable to clear it.
-      console.log('111111');
-      getLocation();
-    }, 1200000);
-    return () => clearInterval(intervalId); //This is important
-  }, []);
 
   // useEffect(() => {
   //   return () => {
@@ -92,7 +112,7 @@ export const AppNavigation = () => {
   // const stopForegroundService = useCallback(() => {
   //   VIForegroundService.stopService().catch((err) => err);
   // }, []);
-  
+
   // const removeLocationUpdates = useCallback(() => {
   //   if (watchId.current !== null) {
   //     stopForegroundService();
@@ -121,5 +141,9 @@ export const AppNavigation = () => {
   //   });
   // };
 
-  return <RootNavigator />;
+  if (isAsyncDataLoaded && isAsyncSettingsLoaded) {
+    return <RootNavigator />;
+  }
+
+  return <LoadingNavigator />;
 };
