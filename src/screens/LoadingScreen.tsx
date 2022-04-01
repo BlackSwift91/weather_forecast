@@ -31,8 +31,6 @@ export const LoadingScreen = () => {
   );
 };
 
-
-
 const styles = StyleSheet.create({
   center: {
     flex: 1,

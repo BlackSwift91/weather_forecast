@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { HeaderButton } from 'react-navigation-header-buttons';
+import { HeaderButton, HeaderButtonProps } from 'react-navigation-header-buttons';
 
-export const CustomHeaderButton = (props) => (
-  <HeaderButton iconSize={23} {...props} />
-);
+export const CustomHeaderButton = (props: HeaderButtonProps) => <HeaderButton iconSize={23} {...props} />;

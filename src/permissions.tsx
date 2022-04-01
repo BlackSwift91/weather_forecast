@@ -1,10 +1,13 @@
-import { PermissionsAndroid, Platform, ToastAndroid } from 'react-native';
+import Geolocation from 'react-native-geolocation-service';
+import { PermissionsAndroid, Platform, ToastAndroid, Linking, Alert } from 'react-native';
+
+import appConfig from '../app.json';
 
 export const hasLocationPermission = async () => {
-  // if (Platform.OS === 'ios') {
-  //   const hasPermission = await hasPermissionIOS();
-  //   return hasPermission;
-  // }
+  if (Platform.OS === 'ios') {
+    const hasPermission = await hasPermissionIOS();
+    return hasPermission;
+  }
 
   if (Platform.OS === 'android' && Platform.Version < 23) {
     return true;
@@ -19,7 +22,6 @@ export const hasLocationPermission = async () => {
   const status = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
 
   if (status === PermissionsAndroid.RESULTS.GRANTED) {
-    ToastAndroid.show('Location permission granted by user.', ToastAndroid.LONG);
     return true;
   }
 
@@ -31,28 +33,28 @@ export const hasLocationPermission = async () => {
   return false;
 };
 
-// const hasPermissionIOS = async () => {
-//   const openSetting = () => {
-//     Linking.openSettings().catch(() => {
-//       Alert.alert('Unable to open settings');
-//     });
-//   };
-//   const status = await Geolocation.requestAuthorization('whenInUse');
+const hasPermissionIOS = async () => {
+  const openSetting = () => {
+    Linking.openSettings().catch(() => {
+      Alert.alert('Unable to open settings');
+    });
+  };
+  const status = await Geolocation.requestAuthorization('whenInUse');
 
-//   if (status === 'granted') {
-//     return true;
-//   }
+  if (status === 'granted') {
+    return true;
+  }
 
-//   if (status === 'denied') {
-//     Alert.alert('Location permission denied');
-//   }
+  if (status === 'denied') {
+    Alert.alert('Location permission denied');
+  }
 
-//   if (status === 'disabled') {
-//     Alert.alert(`Turn on Location Services to allow "${appConfig.displayName}" to determine your location.`, '', [
-//       { text: 'Go to Settings', onPress: openSetting },
-//       { text: "Don't Use Location", onPress: () => {} },
-//     ]);
-//   }
+  if (status === 'disabled') {
+    Alert.alert(`Turn on Location Services to allow "${appConfig.displayName}" to determine your location.`, '', [
+      { text: 'Go to Settings', onPress: openSetting },
+      { text: "Don't Use Location", onPress: () => {} },
+    ]);
+  }
 
-//   return false;
-// };
+  return false;
+};

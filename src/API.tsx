@@ -1,4 +1,4 @@
-import { IOneAPIResponse, ILocation, ILWFetch } from './interfaces';
+import { IOneAPIResponse, ILocation, ILWFetch } from './interfaces/IWeatherState';
 
 interface IDirectGeocoding {
   city: string;
@@ -64,12 +64,13 @@ export const weatherFetch = async (latitude: number, longitude: number, exclude:
         payload: {
           weather: values[0],
           location: values[1][0],
+          lastUpdate: Date.now(),
         },
         status: true,
       };
     } else {
       return {
-        payload: undefined,
+        payload: null,
         status: false,
       };
     }

@@ -1,4 +1,4 @@
-import { ISettings } from '../../interfaces';
+import { ISettings } from '../../interfaces/IWeatherState';
 
 import { SettingActions } from '../actions/actions';
 import { LOAD_INITIAL_SETTINGS, SET_LANGUAGE } from '../types';
@@ -23,8 +23,6 @@ export const appReducer = (state = appData, action: SettingActions) => {
         return {
           ...action.payload,
           activeScreen: 0,
-          isAsyncDataLoaded: false,
-          isAsyncSettingsLoaded: false,
         };
       }
 

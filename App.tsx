@@ -8,25 +8,19 @@
  * @format
  */
 
-import React from 'react';
-import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
-import { useColorScheme, LogBox } from 'react-native';
-import { AppNavigation } from './src/navigation/AppNavigation';
-
 import 'react-native-gesture-handler';
+import React, { useState, useEffect } from 'react';
+import { useColorScheme, LogBox } from 'react-native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { AppNavigator } from './src/navigation/AppNavigator';
 
-// import appConfig from '../app.json';
+import { store } from './src/store';
 
-LogBox.ignoreLogs([
-  "[react-native-gesture-handler] Seems like you\'re using an old API with gesture components, check out new Gestures system!",
-]);
-
-import { store } from './src/store/';
 import { Provider } from 'react-redux';
 
-import { locationsInit, settingsInit } from './src/store/actions/actions';
-
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+
+import { hasLocationPermission } from './src/permissions';
 
 const navTheme = {
   ...DefaultTheme,
@@ -36,18 +30,22 @@ const navTheme = {
   },
 };
 
+LogBox.ignoreLogs([
+  "[react-native-gesture-handler] Seems like you\'re using an old API with gesture components, check out new Gestures system!",
+]);
+
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
+
+
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
-  store.dispatch(settingsInit);
-  // store.dispatch(locationsInit);
 
   return (
     <Provider store={store}>
       <NavigationContainer theme={navTheme}>
-        <AppNavigation />
+        <AppNavigator />
       </NavigationContainer>
     </Provider>
   );

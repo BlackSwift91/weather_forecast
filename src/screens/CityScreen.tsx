@@ -3,13 +3,15 @@ import { View, Text, StyleSheet, ScrollView, RefreshControl, StatusBar } from 'r
 import LinearGradient from 'react-native-linear-gradient';
 
 import moment from 'moment';
-
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { weatherFetch } from '../API';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateLocation } from '../store/actions/actions';
-import { IRootState } from '../store/index';
+import { updateLocation } from '../oldstore/actions/weatherActions';
+import { IRootState } from '../oldstore/index';
 
-export const CityScreen = () => {
+import { setActiveScreen } from '../oldstore/actions/actions';
+
+export const CityScreen = ({ navigation, route, itemId }) => {
   const [refreshing, setRefreshing] = React.useState(false);
   const [isLoaded, setIsLoaded] = React.useState(true);
 
@@ -27,6 +29,16 @@ export const CityScreen = () => {
   //   })();
   // }, [dispatch]);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      // console.log('ROUTE', route.params);
+      dispatch(setActiveScreen(route.params.screenId));
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
     if (userLocation.latitude && userLocation.longitude) {
@@ -42,6 +54,23 @@ export const CityScreen = () => {
     }
   }, [dispatch, userLocation.latitude, userLocation.longitude]);
 
+
+
+  // const onRefresh = React.useCallback(async () => {
+  //   setRefreshing(true);
+  //   if (userLocation.latitude && userLocation.longitude) {
+  //     console.log('REFRESH UPDATE');
+  //     weatherFetch(userLocation.latitude, userLocation.longitude, ['hourly', 'minutely'], 1)
+  //       .then(res => {
+  //         if (res.status && res.payload) {
+  //           dispatch(updateLocation(res.payload, 0));
+  //           setIsLoaded(true);
+  //         }
+  //       })
+  //       .then(() => setRefreshing(false));
+  //   }
+  // }, [dispatch, userLocation.latitude, userLocation.longitude]);
+
   if (isLoaded) {
     return (
       <LinearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={styles.linearGradient}>
@@ -55,9 +84,13 @@ export const CityScreen = () => {
         />
         <ScrollView style={styles.center} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <View style={styles.placeWrapper}>
-            <Text style={styles.placeTemperatureText}>{test[0]?.weather.current.temp.toFixed()}°</Text>
+            {/* <Text style={styles.placeCityText}>
+              <Icon name="map-marker-radius-outline" size={26} color="#fff" />
+              afdsgf
+            </Text> */}
+            {/* <Text style={styles.placeTemperatureText}>{test[0]?.weather.current.temp.toFixed()}°</Text>
             <Text style={styles.placeWeatherDescriptionText}>{test[0]?.weather.current.weather[0].description}</Text>
-            <Text style={styles.placeRealFeelText}>RealFeel {test[0]?.weather.current.feels_like.toFixed()}°</Text>
+            <Text style={styles.placeRealFeelText}>RealFeel {test[0]?.weather.current.feels_like.toFixed()}°</Text> */}
           </View>
         </ScrollView>
       </LinearGradient>
@@ -105,7 +138,7 @@ const styles = StyleSheet.create({
   },
   placeTemperatureText: {
     color: '#ffffff',
-    paddingTop: 15,
+    paddingTop: 20,
     paddingLeft: 25,
     fontSize: 64,
     textAlign: 'center',

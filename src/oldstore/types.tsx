@@ -7,9 +7,6 @@ export const UPDATE_PLACE = 'UPDATE_PLACE';
 export const SET_LANGUAGE = 'SET_LANGUAGE';
 
 
-
-
-
 export const INITIAL_DATA_LOAD = 'INITIAL_DATA_LOAD';
 export const LOAD_INITIAL_SETTINGS = 'LOAD_INITIAL_SETTINGS';
 

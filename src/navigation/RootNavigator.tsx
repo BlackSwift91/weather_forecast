@@ -10,7 +10,7 @@ import { Text, StyleSheet, StatusBar } from 'react-native';
 
 import { useDispatch } from 'react-redux';
 
-import { IRootState } from '../store/index';
+import { IRootState } from '../oldstore/index';
 import { CityScreen } from '../screens/CityScreen';
 import { CityNavigator } from './CityNavigator';
 import { SettingsNavigator } from './SettingsNavigator';
@@ -26,9 +26,17 @@ export const RootNavigator = () => {
   const [activeCity, setActiveCity] = React.useState('');
   const [isLoaded, setIsLoaded] = React.useState(true);
 
-  const dispatch = useDispatch();
+  const settings = useSelector((state: IRootState) => state.appReducer);
+  const weather = useSelector((state: IRootState) => state.weatherReducer);
 
-
+  // useEffect(() => {
+  //   (async () => {
+  //     if (weather.locationWeather) {
+  //       const city = weather.locationWeather.filter(loc => loc.id !== settings.activeScreen);
+  //       setActiveCity(city[0].location.local_names[settings.settings.language]);
+  //     }
+  //   })();
+  // }, [settings.activeScreen, settings.settings.language, weather.locationWeather]);
 
   // useEffect(() => {
   //   (async () => {
@@ -38,24 +46,24 @@ export const RootNavigator = () => {
 
   // console.log("SETTINGS RED", settings);
 
-  if (!isLoaded) {
-    return (
-      <Stack.Navigator
-        screenOptions={{
-          headerMode: 'screen',
-          headerTransparent: true,
-          headerTitleAlign: 'center',
-        }}>
-        <Stack.Screen
-          options={{
-            title: '',
-          }}
-          name="CityList"
-          component={LoadingScreen}
-        />
-      </Stack.Navigator>
-    );
-  }
+  // if (!isLoaded) {
+  //   return (
+  //     <Stack.Navigator
+  //       screenOptions={{
+  //         headerMode: 'screen',
+  //         headerTransparent: true,
+  //         headerTitleAlign: 'center',
+  //       }}>
+  //       <Stack.Screen
+  //         options={{
+  //           title: '',
+  //         }}
+  //         name="CityList"
+  //         component={LoadingScreen}
+  //       />
+  //     </Stack.Navigator>
+  //   );
+  // }
 
   return (
     <Stack.Navigator

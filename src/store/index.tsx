@@ -1,23 +1,15 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { configureStore } from '@reduxjs/toolkit';
 
-import thunkMiddleware from 'redux-thunk';
+import appStateSlice from './appStateSlice';
+import locationSlice from './locationSlice';
 
-import { weatherReducer } from './reducers/weatherReducer';
-import { userLocationReducer } from './reducers/userLocationReducer';
-import { appReducer } from './reducers/appReducer';
+export const store = configureStore({
+  reducer: {
+    appState: appStateSlice,
+    locationState: locationSlice,
+  },
+});
 
-import Geolocation from 'react-native-geolocation-service';
+export type RootState = ReturnType<typeof store.getState>;
 
-import { IWeatherState, ISettings } from '../interfaces';
-
-export interface IRootState {
-  userLocationReducer: Geolocation.GeoPosition;
-  weatherReducer: IWeatherState;
-  appReducer: ISettings;
-}
-
-const composedEnhancer = applyMiddleware(thunkMiddleware);
-
-const rootReducer = combineReducers({ userLocationReducer, weatherReducer, appReducer });
-
-export const store = createStore(rootReducer, composedEnhancer);
+export type AppDispatch = typeof store.dispatch;

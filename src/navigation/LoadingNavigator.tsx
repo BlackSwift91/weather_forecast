@@ -6,7 +6,6 @@ const Stack = createStackNavigator();
 
 export const LoadingNavigator = () => {
   console.log('LOADING NAVIGATION RENDER');
-
   return (
     <Stack.Navigator
       screenOptions={{
